@@ -10,7 +10,7 @@ $data = json_decode($jsonStr, true);
 $db_hostname = "mysql216.phy.lolipop.lan";
 $db_name = "LAA1417875-team4";
 $db_user_name = "LAA1417875";
-$db_password = "Pass0114";
+$db_password = "team4";
 $pdo = new PDO("mysql:host={$db_hostname};dbname={$db_name};charset=utf8", $db_user_name, $db_password);
 
 /*
