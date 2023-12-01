@@ -42,7 +42,7 @@ echo "<br>";
 ?>
 <?php
 //インデックスを取得したあと、プラス１ 
-$idx = $_SESSION['q_cnt_idx'];
+echo $idx = $_SESSION['q_cnt_idx'];
 $_SESSION['q_cnt_idx']++
 ?>
 
@@ -56,8 +56,8 @@ $_SESSION['q_cnt_idx']++
 
 <body>
   <p>問題文</p>
-  <!-- <?php $id = $ids[$idx]; ?>
-  <?= '$id = ' . $id; ?>
+  <?php $id = $ids[$idx]; ?>
+  <!-- <?= '$id = ' . $id; ?>
   <?= '$ids = ' . $ids; ?>
   <?= '$idx = ' . $idx; ?>
   <?= '$ids[0] = ' . $ids[0]; ?> -->
