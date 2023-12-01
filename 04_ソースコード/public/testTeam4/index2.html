@@ -1,7 +1,7 @@
 <?php // これは、有効期限が1日の永続クッキーを送信します
 session_start(['cookie_lifetime' => 86400,]);
 // session_start();
-echo "session id = " . session_id() . "<br>";
+// echo "session id = " . session_id() . "<br>";
 ?>
 <?php
 // PDOを使ってデータベースに接続する
@@ -25,29 +25,30 @@ if (!isset($_SESSION['q_cnt_idx']) || $_SESSION['q_cnt_idx'] >= 10) {
   $ids = $db->getRandomIds($pdo, 10);
   $_SESSION['ids'] = $ids;
   $_SESSION['q_cnt_idx'] = 0;
+  // 正解数を初期化
+  $_SESSION['correct_cnt'] = 0;
 
-  echo "session start";
+  // echo "session start";
 } else {
   // ランダム問題配列をセッションから取得する
   $ids = $_SESSION['ids'];
-  echo "session continue";
+  // echo "session continue";
 }
-
-/*
-echo "<br>";
-echo "session id = " . session_id();
-echo "<br>";
-*/
 
 ?>
 <?php
 //インデックスを取得したあと、プラス１ 
 $idx = $_SESSION['q_cnt_idx'];
-$_SESSION['q_cnt_idx']++
+// echo "q_cnt_idxは" . $_SESSION['q_cnt_idx'] . "<br>";
+$_SESSION['q_cnt_idx']++;
+$id = $ids[$idx];
+$question = $db->getQuestionsById($pdo, $id);
+// 正解数を取得
+$correct_cnt = $_SESSION['correct_cnt'];
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="jp">
 
 <head>
   <meta charset="utf-8" />
@@ -60,33 +61,36 @@ $_SESSION['q_cnt_idx']++
 </head>
 
 <body>
-  <?php $question = $db->getQuestionsById($pdo, $id);  ?>
   <div class="container">
     <h1>クイズアプリ</h1>
+    <div>
+      <h3><?= ($idx + 1) . "問目" ?></h3>
+      <h3><?= "正解数：" . $correct_cnt ?></h3>
+    </div>
     <div id="question-number">問題番号: <?= $question['id']; ?></div>
     <div id="question-text"><?= $question['question']; ?></div>
-    <form id="quiz-form">
+    <form id="quiz-form" action="./ansProcess.php" method="POST">
       <div class="form-check">
-        <input class="form-check-input" type="radio" name="answer" id="answer1" value=0>
+        <input class="form-check-input" type="radio" name="answer_opt" id="answer1" value=0>
         <label class="form-check-label" for="answer1">
           <?= $question['answers1']; ?>
         </label>
       </div>
       <div class="form-check">
-        <input class="form-check-input" type="radio" name="answer" id="answer2" value=1>
+        <input class="form-check-input" type="radio" name="answer_opt" id="answer2" value=1>
         <label class="form-check-label" for="answer2">
           <?= $question['answers2']; ?>
         </label>
       </div>
       <div class="form-check">
-        <input class="form-check-input" type="radio" name="answer" id="answer3" value=2>
+        <input class="form-check-input" type="radio" name="answer_opt" id="answer3" value=2>
         <label class="form-check-label" for="answer3">
           <?= $question['answers3']; ?>
         </label>
       </div>
-      <div><input type="hidden" value="<?= $question['answer']; ?>"></div>
+      <div><input type="hidden" name="correct_answer" value="<?= $question['answer']; ?>"></div>
+      <input type="submit" id="submit-button" class="btn btn-primary" value="決定">
     </form>
-    <button id="submit-button" class="btn btn-primary">決定</button>
   </div>
 
   <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>

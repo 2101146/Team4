@@ -1,0 +1,46 @@
+<?php
+session_start();
+// セッションを破棄する
+// $_SESSION = array();
+// session_destroy();
+?>
+<?php
+// 正解数をPOSTデータで取得
+$correct_cnt = $_SESSION['correct_cnt'];
+?>
+
+<!DOCTYPE html>
+<html lang="jp">
+
+<head>
+  <meta charset="utf-8" />
+  <title>正解数</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    /* ここにカスタムCSSを追加 */
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>クイズアプリ</h1>
+    <div>
+      <h3><?= "10問中" ?></h3>
+      <h1><?= $correct_cnt . "問" ?></h1>
+      <h3><?= "正解でした" ?></h3>
+    </div>
+    <form id="quiz-form" action="./" method="GET">
+      <input type="submit" id="submit-button" class="btn btn-primary" value="もういちどクイズをする">
+    </form>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+  <script>
+    // ここにJavascriptを追加
+  </script>
+</body>
+
+</html>
