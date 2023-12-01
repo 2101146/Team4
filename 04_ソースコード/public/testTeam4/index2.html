@@ -1,0 +1,100 @@
+<?php // これは、有効期限が1日の永続クッキーを送信します
+session_start(['cookie_lifetime' => 86400,]);
+// session_start();
+echo "session id = " . session_id() . "<br>";
+?>
+<?php
+// PDOを使ってデータベースに接続する
+require_once(__DIR__ . '/DBmng.php');
+$db = new DBmng();
+$pdo = $db->dbConnect();
+?>
+<?php
+/* セッション上に問題カウントがあるかどうかをチェックする 
+echo isset($_SESSION['q_cnt_idx']) ? 'true' : 'false';
+echo isset($_SESSION['ids']) ? 'true' : 'false';
+echo "<br>";
+echo $_SESSION['q_cnt_idx'];
+echo "<br>";
+*/
+
+/* セッション上の問題カウントがない、
+  または10を超えたら、セッションを破棄し、カウントインデックスを0にリセットする*/
+if (!isset($_SESSION['q_cnt_idx']) || $_SESSION['q_cnt_idx'] >= 10) {
+  // ランダムな問題のID配列を取得し直して、セッションに格納する
+  $ids = $db->getRandomIds($pdo, 10);
+  $_SESSION['ids'] = $ids;
+  $_SESSION['q_cnt_idx'] = 0;
+
+  echo "session start";
+} else {
+  // ランダム問題配列をセッションから取得する
+  $ids = $_SESSION['ids'];
+  echo "session continue";
+}
+
+/*
+echo "<br>";
+echo "session id = " . session_id();
+echo "<br>";
+*/
+
+?>
+<?php
+//インデックスを取得したあと、プラス１ 
+$idx = $_SESSION['q_cnt_idx'];
+$_SESSION['q_cnt_idx']++
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <title>テスト10問</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    /* ここにカスタムCSSを追加 */
+  </style>
+</head>
+
+<body>
+  <?php $question = $db->getQuestionsById($pdo, $id);  ?>
+  <div class="container">
+    <h1>クイズアプリ</h1>
+    <div id="question-number">問題番号: <?= $question['id']; ?></div>
+    <div id="question-text"><?= $question['question']; ?></div>
+    <form id="quiz-form">
+      <div class="form-check">
+        <input class="form-check-input" type="radio" name="answer" id="answer1" value=0>
+        <label class="form-check-label" for="answer1">
+          <?= $question['answers1']; ?>
+        </label>
+      </div>
+      <div class="form-check">
+        <input class="form-check-input" type="radio" name="answer" id="answer2" value=1>
+        <label class="form-check-label" for="answer2">
+          <?= $question['answers2']; ?>
+        </label>
+      </div>
+      <div class="form-check">
+        <input class="form-check-input" type="radio" name="answer" id="answer3" value=2>
+        <label class="form-check-label" for="answer3">
+          <?= $question['answers3']; ?>
+        </label>
+      </div>
+      <div><input type="hidden" value="<?= $question['answer']; ?>"></div>
+    </form>
+    <button id="submit-button" class="btn btn-primary">決定</button>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+  <script>
+    // ここにJavascriptを追加
+  </script>
+</body>
+
+</html>
